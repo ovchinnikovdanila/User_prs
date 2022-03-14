@@ -91,8 +91,6 @@ class pars_object:
 			if a[0] == "100":
 				self.userid = item.split("=")[1].split(",",1)[0] 
 
-dirname = './'
-files = os.listdir(dirname)
 if os.path.exists("tmp-patron_import.csv"):
 	os.remove("tmp-patron_import.csv")
 reader("users.dat")
