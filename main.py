@@ -3,45 +3,50 @@ import csv
 import os
 
 def reader(filename):
-	with open(filename, "r", encoding="utf-8") as f:
-		m = []
-		ass = ""
-		for row in csv.reader(f):
-			if any(field.strip() for field in row):
-				for item in row:
-					ass += "," + str(item)
-				m.append(ass)
-	return m
+		with open(filename, "r", encoding="utf-8") as f:
+			for row in csv.reader(f):
+				if any(field.strip() for field in row):
+					text = ""
+					for item in row:
+						text += "," + item
+					global a 
+					a = pars_object(text)
+					add_row()
 
-def output_csv():
+def add_row():
 	thisFile = "tmp-patron_import.csv"
-	with open(thisFile, "w", encoding="utf-8") as csvfile:
-		writer = csv.writer(csvfile, delimiter=',')
-		header = ["cardnumber", "surname", "firstname", "address", "country", "email", "phone", "dateofbirth", "branchcode", "categorycode", "dateenrolled", "dateexpiry", "borrowernotes", "password", "userid"]
-		writer.writerow(header)
-		for item in pars_objects:
-			row = [item.cardnumber, item.surname, item.firstname, item.address, item.country, item.email, item.phone, item.dateofbirth, item.branchcode, item.categorycode, item.dateenrolled, item.dateexpiry, item.borrowernotes, item.password, item.userid]
+	if not os.path.exists(thisFile):
+		with open(thisFile, "w", newline = "", encoding="utf-8") as csvfile:
+			writer = csv.writer(csvfile, delimiter=',')
+			header = ["cardnumber", "surname", "firstname", "address", "country", "email", "phone", "dateofbirth", "branchcode", "categorycode", "dateenrolled", "dateexpiry", "borrowernotes", "password", "userid"]
+			writer.writerow(header)
+			row = [a.cardnumber, a.surname, a.firstname, a.address, a.country, a.email, a.phone, a.dateofbirth, a.branchcode, a.categorycode, a.dateenrolled, a.dateexpiry, a.borrowernotes, a.password, a.userid]
+			writer.writerow(row)
+	
+	else:
+		with open(thisFile, "a", newline = "", encoding="utf-8") as csvfile:
+			writer = csv.writer(csvfile, delimiter=',')
+			row = [a.cardnumber, a.surname, a.firstname, a.address, a.country, a.email, a.phone, a.dateofbirth, a.branchcode, a.categorycode, a.dateenrolled, a.dateexpiry, a.borrowernotes, a.password, a.userid]
 			writer.writerow(row)
 
 class pars_object:
-	def __init__(self, name, text):
-		self.name = name
+	def __init__(self, text):
 		self.text = text
-		self.cardnumber = " "
-		self.surname = " "
-		self.firstname = " "
-		self.address = " "
-		self.country = " "
-		self.email = " "
-		self.phone = " "
-		self.dateofbirth = " "
-		self.branchcode = "TPU"
-		self.categorycode = " "
-		self.dateenrolled = " "
-		self.dateexpiry = " "
-		self.borrowernotes = " "
-		self.password = " "
-		self.userid = " "
+		self.cardnumber = ' '
+		self.surname = ' '
+		self.firstname = ' '
+		self.address = ' '
+		self.country = ' '
+		self.email = ' '
+		self.phone = ' '
+		self.dateofbirth = ' '
+		self.branchcode = 'TPU'
+		self.categorycode = ' '
+		self.dateenrolled = ' '
+		self.dateexpiry = ' '
+		self.borrowernotes = ' '
+		self.password = ' '
+		self.userid = ' '
 		self.objects_fields()
 	
 	def objects_fields(self):
@@ -88,6 +93,6 @@ class pars_object:
 
 dirname = './'
 files = os.listdir(dirname)
-mass = reader("users.dat")
-pars_objects = [pars_object(f"name_object_{i}", mass[i]) for i in range(len(mass))]
-output_csv()
+if os.path.exists("tmp-patron_import.csv"):
+	os.remove("tmp-patron_import.csv")
+reader("users.dat")
