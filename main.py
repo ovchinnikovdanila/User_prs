@@ -5,14 +5,12 @@ import os
 def reader(filename):
 		with open(filename, "r", encoding="utf-8") as f:
 			text = ""
-			flag = 0
 			etc = 0
 			global a
 			for row in csv.reader(f):
 				if row[0] == "@1" and etc != 0:
 					a = pars_object(text)
 					add_row()
-					falg = 1
 					text = ""
 				if any(field.strip() for field in row):
 					for item in row:
