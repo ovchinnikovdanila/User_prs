@@ -8,15 +8,6 @@ def reader(filename):
 			etc = 0
 			global a
 			for row in csv.reader(f, delimiter="@"):
-				# print(etc)
-				# if row[0]:
-				# 	print("fuck")
-				# 	if row[0][0] == "1" and row[0][1] ==",":
-				# 		etc += 1
-				# 	if row[0][0] == "1" and row[0][1] =="," and etc > 1:
-				# 		a = pars_object(text)
-				# 		add_row()
-				# 		text = ""
 				if any(field.strip() for field in row):
 					for item in row:
 						if item:
@@ -71,16 +62,6 @@ class pars_object:
 		self.objects_fields()
 	
 	def objects_fields(self):
-		# def nise_view(text):
-		# 	a = text.replace("  ", " ")
-		# 	a = a.replace("; ;",";")
-		# 	a = a.replace(" ;","")
-		# 	a = a.replace(";",",")
-		# 	a = a.replace("*^/&%","")
-		# 	while a[-1] == " " or a[-1] == ",":
-		# 		a = a[:-1]
-		# 	return(a)
-
 		m = self.text.split("@")
 		for item in m:
 			a = item.split(",",1)
