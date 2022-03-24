@@ -98,7 +98,7 @@ class pars_object:
 				self.dateexpiry = b[0] + b[1] + b[2] + b[3] + "-" + b[4] + b[5] + "-" + b[6] + b[7]
 			if a[0] == "119":
 				if re.search('[а-яА-Я ,]', item.split("=")[1].replace("&#%!$","").replace("*^/&%","")):
-					self.borrowernotes = '"' + item.split("=")[1].replace("&#%!$","").replace("*^/&%","") + '"'
+					self.borrowernotes = '"' + item.split("=")[1].replace("&#%!$"," ").replace("*^/&%"," ").replace("  "," ") + '"'
 				else:
 					self.borrowernotes = item.split("=")[1].split(",",1)[0].replace("&#%!$","").replace("*^/&%","")
 			if a[0] == "115":
