@@ -10,7 +10,7 @@ def reader(filename):
 			for row in csv.reader(f, delimiter="@"):
 				if any(field.strip() for field in row):
 					for item in row:
-						if item:
+						if item and len(item) >= 2:
 							if item[0] == "1" and item[1] ==",":
 								etc += 1
 							if item[0] == "1" and item[1] =="," and etc > 1:
@@ -62,49 +62,59 @@ class pars_object:
 		self.objects_fields()
 	
 	def objects_fields(self):
+
+		def del_double(text):
+			while len(text) > 1 and (re.search('  ',text) or text[0] == " " or text[-1] == " "):
+				text = text.replace("  "," ")
+				if text[-1] == " ":
+					text = text[:-1]
+				if text[0] == " ":
+					text = text[1:]
+			return(text)
+
 		m = self.text.split("@")
 		for item in m:
 			a = item.split(",",1)
 			if a[0] == "100":
-				self.cardnumber = item.split("=")[1].split(",",1)[0].replace("&#%!$","").replace("*^/&%","")
+				self.cardnumber = item.split("=",1)[1].split(",",1)[0].replace("&#%!$","").replace("*^/&%","")
 			if a[0] == "101":
-				self.surname = '"' + item.split("=")[1].replace("&#%!$","").replace("*^/&%","") + '"'
+				self.surname = '"' + del_double(item.split("=",1)[1].replace("&#%!$"," ").replace("*^/&%"," ")) + '"'
 			if a[0] == "102":
-				self.firstname = '"' + item.split("=")[1].replace("&#%!$","").replace("*^/&%","")
+				self.firstname = '"' + del_double(item.split("=",1)[1].replace("&#%!$"," ").replace("*^/&%"," "))
 			if a[0] == "103":
-				self.firstname += " " + item.split("=")[1].replace("&#%!$","").replace("*^/&%","") + '"'
+				self.firstname += " " + del_double(item.split("=",1)[1].replace("&#%!$"," ").replace("*^/&%"," ")) + '"'
 			if a[0] == "130":
-				self.address = '"' + item.split("=")[1].replace("&#%!$","").replace("*^/&%","") + '"'
+				self.address = '"' + del_double(item.split("=",1)[1].replace("&#%!$"," ").replace("*^/&%"," ")) + '"'
 			if a[0] == "108":
-				self.country = '"' + item.split("=")[1].replace("&#%!$","").replace("*^/&%","") + '"'
+				self.country = '"' + del_double(item.split("=",1)[1].replace("&#%!$"," ").replace("*^/&%"," ")) + '"'
 			if a[0] == "122":
-				self.email = item.split("=")[1].replace("&#%!$","").replace("*^/&%","@")
+				self.email = item.split("=",1)[1].replace("&#%!$","").replace("*^/&%","@")
 			if a[0] == "120":
-				self.phone = item.split("=")[1].replace("&#%!$","").replace("*^/&%","")
+				self.phone = item.split("=",1)[1].replace("&#%!$","").replace("*^/&%","")
 			if a[0] == "234":
-				b = item.split("=")[1].replace("&#%!$","").replace("*^/&%","")
+				b = item.split("=",1)[1].replace("&#%!$","").replace("*^/&%","")
 				self.dateofbirth = b[0] + b[1] + b[2] + b[3] + "-" + b[4] + b[5] + "-" + b[6] + b[7]
 			if a[0] == "107":
-				b = item.split("=")[1].replace("&#%!$","").replace("*^/&%","")
+				b = item.split("=",1)[1].replace("&#%!$","").replace("*^/&%","")
 				if b == "Студент":
 					self.categorycode = "ST"
 				else:
 					self.categorycode = "PT"
 			if a[0] == "246":
-				b = item.split("=")[1].replace("&#%!$","").replace("*^/&%","")
+				b = item.split("=",1)[1].replace("&#%!$","").replace("*^/&%","")
 				self.dateenrolled = b[0] + b[1] + b[2] + b[3] + "-" + b[4] + b[5] + "-" + b[6] + b[7]
 			if a[0] == "106":
-				b = item.split("=")[1].replace("&#%!$","").replace("*^/&%","")
+				b = item.split("=",1)[1].replace("&#%!$","").replace("*^/&%","")
 				self.dateexpiry = b[0] + b[1] + b[2] + b[3] + "-" + b[4] + b[5] + "-" + b[6] + b[7]
 			if a[0] == "119":
-				if re.search('[а-яА-Я ,]', item.split("=")[1].replace("&#%!$","").replace("*^/&%","")):
-					self.borrowernotes = '"' + item.split("=")[1].replace("&#%!$"," ").replace("*^/&%"," ").replace("  "," ") + '"'
+				if re.search('[а-яА-Я ,]', del_double(item.split("=",1)[1].replace("&#%!$"," ").replace("*^/&%"," "))):
+					self.borrowernotes = '"' + del_double(item.split("=",1)[1].replace("&#%!$"," ").replace("*^/&%"," ")) + '"'
 				else:
-					self.borrowernotes = item.split("=")[1].split(",",1)[0].replace("&#%!$","").replace("*^/&%","")
+					self.borrowernotes = del_double(item.split("=",1)[1].split(",",1)[0].replace("&#%!$"," ").replace("*^/&%"," "))
 			if a[0] == "115":
-				self.password = item.split("=")[1].replace("&#%!$","").replace("*^/&%","")
+				self.password = item.split("=",1)[1].replace("&#%!$","").replace("*^/&%","")
 			if a[0] == "100":
-				self.userid = item.split("=")[1].split(",",1)[0].replace("&#%!$","").replace("*^/&%","")
+				self.userid = item.split("=",1)[1].split(",",1)[0].replace("&#%!$","").replace("*^/&%","")
 
 if os.path.exists("tmp-patron_import.csv"):
 	os.remove("tmp-patron_import.csv")
