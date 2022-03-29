@@ -29,7 +29,7 @@ def add_row():
 	thisFile = "tmp-patron_import.csv"
 	if not os.path.exists(thisFile):
 		with open(thisFile, "w", newline = "", encoding="utf-8") as csvfile:
-			writer = csv.writer(csvfile, quoting=csv.QUOTE_NONE, escapechar='', quotechar='',  delimiter='\t')
+			writer = csv.writer(csvfile, quoting=csv.QUOTE_NONE, escapechar=';', quotechar=';',  delimiter='\t')
 			header = ["cardnumber,surname,firstname,address,country,email,phone,dateofbirth,branchcode,categorycode,dateenrolled,dateexpiry,borrowernotes,password,userid"]
 			writer.writerow(header)
 			row = [a.cardnumber+","+a.surname+","+a.firstname+","+a.address+","+a.country+","+a.email+","+a.phone+","+a.dateofbirth+","+a.branchcode+","+a.categorycode+","+a.dateenrolled+","+a.dateexpiry+","+a.borrowernotes+","+a.password+","+a.userid]
@@ -37,7 +37,7 @@ def add_row():
 	
 	else:
 		with open(thisFile, "a", newline = "", encoding="utf-8") as csvfile:
-			writer = csv.writer(csvfile, quoting=csv.QUOTE_NONE, escapechar='', quotechar='',  delimiter='\t')
+			writer = csv.writer(csvfile, quoting=csv.QUOTE_NONE, escapechar=';', quotechar=';',  delimiter='\t')
 			row = [a.cardnumber+","+a.surname+","+a.firstname+","+a.address+","+a.country+","+a.email+","+a.phone+","+a.dateofbirth+","+a.branchcode+","+a.categorycode+","+a.dateenrolled+","+a.dateexpiry+","+a.borrowernotes+","+a.password+","+a.userid]
 			writer.writerow(row)
 
