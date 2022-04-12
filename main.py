@@ -30,15 +30,15 @@ def add_row():
 	if not os.path.exists(thisFile):
 		with open(thisFile, "w", newline = "", encoding="utf-8") as csvfile:
 			writer = csv.writer(csvfile, quoting=csv.QUOTE_NONE, escapechar='', quotechar='',  delimiter='\t')
-			header = ["cardnumber,surname,firstname,address,country,email,phone,dateofbirth,branchcode,categorycode,dateenrolled,dateexpiry,borrowernotes,password,userid"]
+			header = ["cardnumber,surname,firstname,dateofbirth,othernames,categorycode,country,address,email,phone,phonepro,fax,B_address,branchcode,dateenrolled,dateexpiry,borrowernotes,password,userid"]
 			writer.writerow(header)
-			row = [a.cardnumber+","+a.surname+","+a.firstname+","+a.address+","+a.country+","+a.email+","+a.phone+","+a.dateofbirth+","+a.branchcode+","+a.categorycode+","+a.dateenrolled+","+a.dateexpiry+","+a.borrowernotes+","+a.password+","+a.userid]
+			row = [a.cardnumber+","+a.surname+","+a.firstname+","+a.dateofbirth+","+a.othernames+","+a.categorycode+","+a.country+","+a.address+","+a.email+","+a.phone+","+a.phonepro+","+a.fax+","+a.b_address+","+a.branchcode+","+a.dateenrolled+","+a.dateexpiry+","+a.borrowernotes+","+a.password+","+a.userid]
 			writer.writerow(row)
 	
 	else:
 		with open(thisFile, "a", newline = "", encoding="utf-8") as csvfile:
 			writer = csv.writer(csvfile, quoting=csv.QUOTE_NONE, escapechar='', quotechar='',  delimiter='\t')
-			row = [a.cardnumber+","+a.surname+","+a.firstname+","+a.address+","+a.country+","+a.email+","+a.phone+","+a.dateofbirth+","+a.branchcode+","+a.categorycode+","+a.dateenrolled+","+a.dateexpiry+","+a.borrowernotes+","+a.password+","+a.userid]
+			row = [a.cardnumber+","+a.surname+","+a.firstname+","+a.dateofbirth+","+a.othernames+","+a.categorycode+","+a.country+","+a.address+","+a.email+","+a.phone+","+a.phonepro+","+a.fax+","+a.b_address+","+a.branchcode+","+a.dateenrolled+","+a.dateexpiry+","+a.borrowernotes+","+a.password+","+a.userid]
 			writer.writerow(row)
 
 class pars_object:
@@ -48,9 +48,11 @@ class pars_object:
 		self.surname = ' '
 		self.firstname = ' '
 		self.address = ' '
+		self.b_address = ' '
 		self.country = ' '
 		self.email = ' '
 		self.phone = ' '
+		self.phonepro = ' '
 		self.dateofbirth = ' '
 		self.branchcode = 'TPU'
 		self.categorycode = ' '
@@ -59,6 +61,8 @@ class pars_object:
 		self.borrowernotes = ' '
 		self.password = ' '
 		self.userid = ' '
+		self.othernames = ' '
+		self.fax = ' '
 		self.objects_fields()
 	
 	def objects_fields(self):
@@ -86,6 +90,8 @@ class pars_object:
 				self.firstname += " " + del_double(item.split("=",1)[1].replace("&#%!$"," ").replace("*^/&%"," ")) + '"'
 			if a[0] == "130":
 				self.address = '"' + del_double(item.split("=",1)[1].replace("&#%!$"," ").replace("*^/&%"," ")) + '"'
+			if a[0] == "130":
+				self.b_address = '"' + del_double(item.split("=",1)[1].replace("&#%!$"," ").replace("*^/&%"," ")) + '"'
 			if a[0] == "108":
 				self.country = '"' + del_double(item.split("=",1)[1].replace("&#%!$"," ").replace("*^/&%"," ")) + '"'
 			if a[0] == "122":
@@ -99,8 +105,18 @@ class pars_object:
 				b = item.split("=",1)[1].replace("&#%!$","").replace("*^/&%","")
 				if b == "Студент":
 					self.categorycode = "ST"
+				elif b == "Сотрудник":
+					self.categorycode = "STU"
+				elif b == "Аспирант":
+					self.categorycode = "ASP"
+				elif b == "Докторант":
+					self.borrowernotes = "DOC"
 				else:
 					self.categorycode = "PT"
+			if a[0] == "242":
+				x = item.split("=",1)[1].replace("&#%!$","").replace("*^/&%","")
+				if (x == "заочное" or x == "вечернее") and self.categorycode == "ST":
+					self.categorycode = "STZ"
 			if a[0] == "246":
 				b = item.split("=",1)[1].replace("&#%!$","").replace("*^/&%","")
 				self.dateenrolled = b[0] + b[1] + b[2] + b[3] + "-" + b[4] + b[5] + "-" + b[6] + b[7]
@@ -116,6 +132,18 @@ class pars_object:
 				self.password = item.split("=",1)[1].replace("&#%!$","").replace("*^/&%","")
 			if a[0] == "100":
 				self.userid = item.split("=",1)[1].split(",",1)[0].replace("&#%!$","").replace("*^/&%","")
+			if a[0] == "235":
+				if re.search('[а-яА-Я ,]', del_double(item.split("=",1)[1].replace("&#%!$"," ").replace("*^/&%"," "))):
+					self.othernames = '"' + del_double(item.split("=",1)[1].replace("&#%!$"," ").replace("*^/&%"," ")) + '"'
+				else:
+					self.othernames = del_double(item.split("=",1)[1].split(",",1)[0].replace("&#%!$"," ").replace("*^/&%"," "))
+			if a[0] == "123":
+				self.phonepro = item.split("=",1)[1].replace("&#%!$","").replace("*^/&%","")
+			if a[0] == "124":
+				if re.search('[а-яА-Я ,]', del_double(item.split("=",1)[1].replace("&#%!$"," ").replace("*^/&%"," "))):
+					self.fax = '"' + del_double(item.split("=",1)[1].replace("&#%!$"," ").replace("*^/&%"," ")) + '"'
+				else:
+					self.fax = del_double(item.split("=",1)[1].split(",",1)[0].replace("&#%!$"," ").replace("*^/&%"," "))
 
 if os.path.exists("tmp-patron_import.csv"):
 	os.remove("tmp-patron_import.csv")
