@@ -44,25 +44,25 @@ def add_row():
 class pars_object:
 	def __init__(self, text):
 		self.text = text
-		self.cardnumber = ' '
-		self.surname = ' '
-		self.firstname = ' '
-		self.address = ' '
-		self.b_address = ' '
-		self.country = ' '
-		self.email = ' '
-		self.phone = ' '
-		self.phonepro = ' '
-		self.dateofbirth = ' '
+		self.cardnumber = ''
+		self.surname = ''
+		self.firstname = ''
+		self.address = ''
+		self.b_address = ''
+		self.country = ''
+		self.email = ''
+		self.phone = ''
+		self.phonepro = ''
+		self.dateofbirth = ''
 		self.branchcode = 'TPU'
-		self.categorycode = ' '
-		self.dateenrolled = ' '
-		self.dateexpiry = ' '
-		self.borrowernotes = ' '
-		self.password = ' '
-		self.userid = ' '
-		self.othernames = ' '
-		self.fax = ' '
+		self.categorycode = ''
+		self.dateenrolled = ''
+		self.dateexpiry = ''
+		self.borrowernotes = ''
+		self.password = ''
+		self.userid = ''
+		self.othernames = ''
+		self.fax = ''
 		self.objects_fields()
 	
 	def objects_fields(self):
@@ -90,7 +90,7 @@ class pars_object:
 				self.firstname += " " + del_double(item.split("=",1)[1].replace("&#%!$"," ").replace("*^/&%"," ")) + '"'
 			if a[0] == "130":
 				self.address = '"' + del_double(item.split("=",1)[1].replace("&#%!$"," ").replace("*^/&%"," ")) + '"'
-			if a[0] == "130":
+			if a[0] == "121":
 				self.b_address = '"' + del_double(item.split("=",1)[1].replace("&#%!$"," ").replace("*^/&%"," ")) + '"'
 			if a[0] == "108":
 				self.country = '"' + del_double(item.split("=",1)[1].replace("&#%!$"," ").replace("*^/&%"," ")) + '"'
