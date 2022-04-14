@@ -110,7 +110,7 @@ class pars_object:
 				elif b == "Аспирант":
 					self.categorycode = "ASP"
 				elif b == "Докторант":
-					self.borrowernotes = "DOC"
+					self.categorycode = "DOC"
 				else:
 					self.categorycode = "PT"
 			if a[0] == "242":
