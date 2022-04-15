@@ -30,15 +30,15 @@ def add_row():
 	if not os.path.exists(thisFile):
 		with open(thisFile, "w", newline = "", encoding="utf-8") as csvfile:
 			writer = csv.writer(csvfile, quoting=csv.QUOTE_NONE, escapechar='', quotechar='',  delimiter='\t')
-			header = ["cardnumber,surname,firstname,dateofbirth,othernames,categorycode,country,address,email,phone,phonepro,fax,B_address,branchcode,dateenrolled,dateexpiry,borrowernotes,password,userid"]
+			header = ["cardnumber,surname,firstname,dateofbirth,othernames,categorycode,country,address,email,phone,phonepro,fax,B_address,branchcode,dateenrolled,dateexpiry,borrowernotes,sort1,sort2,password,userid"]
 			writer.writerow(header)
-			row = [a.cardnumber+","+a.surname+","+a.firstname+","+a.dateofbirth+","+a.othernames+","+a.categorycode+","+a.country+","+a.address+","+a.email+","+a.phone+","+a.phonepro+","+a.fax+","+a.b_address+","+a.branchcode+","+a.dateenrolled+","+a.dateexpiry+","+a.borrowernotes+","+a.password+","+a.userid]
+			row = [a.cardnumber+","+a.surname+","+a.firstname+","+a.dateofbirth+","+a.othernames+","+a.categorycode+","+a.country+","+a.address+","+a.email+","+a.phone+","+a.phonepro+","+a.fax+","+a.b_address+","+a.branchcode+","+a.dateenrolled+","+a.dateexpiry+","+a.borrowernotes+","+a.sort1+","+a.sort2+","+a.password+","+a.userid]
 			writer.writerow(row)
 	
 	else:
 		with open(thisFile, "a", newline = "", encoding="utf-8") as csvfile:
 			writer = csv.writer(csvfile, quoting=csv.QUOTE_NONE, escapechar='', quotechar='',  delimiter='\t')
-			row = [a.cardnumber+","+a.surname+","+a.firstname+","+a.dateofbirth+","+a.othernames+","+a.categorycode+","+a.country+","+a.address+","+a.email+","+a.phone+","+a.phonepro+","+a.fax+","+a.b_address+","+a.branchcode+","+a.dateenrolled+","+a.dateexpiry+","+a.borrowernotes+","+a.password+","+a.userid]
+			row = [a.cardnumber+","+a.surname+","+a.firstname+","+a.dateofbirth+","+a.othernames+","+a.categorycode+","+a.country+","+a.address+","+a.email+","+a.phone+","+a.phonepro+","+a.fax+","+a.b_address+","+a.branchcode+","+a.dateenrolled+","+a.dateexpiry+","+a.borrowernotes+","+a.sort1+","+a.sort2+","+a.password+","+a.userid]
 			writer.writerow(row)
 
 class pars_object:
@@ -63,6 +63,8 @@ class pars_object:
 		self.userid = ''
 		self.othernames = ''
 		self.fax = ''
+		self.sort1 = ''
+		self.sort2 = ''
 		self.objects_fields()
 	
 	def objects_fields(self):
@@ -78,8 +80,22 @@ class pars_object:
 			return(text)
 
 		m = self.text.split("@")
+		item109 = ''
+		item112 = ''
+		item113 = ''
+		item114 = ''
 		for item in m:
 			a = item.split(",",1)
+			if a[0] == "10":
+				self.sort2 = item.split("=",1)[1].split(",",1)[0].replace("&#%!$","").replace("*^/&%","")
+			if a[0] == "109":
+				item109 = item.split("=",1)[1].split(",",1)[0].replace("&#%!$","").replace("*^/&%","")
+			if a[0] == "112":
+				item112 = item.split("=",1)[1].split(",",1)[0].replace("&#%!$","").replace("*^/&%","")
+			if a[0] == "113":
+				item113 = item.split("=",1)[1].split(",",1)[0].replace("&#%!$","").replace("*^/&%","")
+			if a[0] == "114":
+				item114 = item.split("=",1)[1].split(",",1)[0].replace("&#%!$","").replace("*^/&%","")
 			if a[0] == "100":
 				self.cardnumber = item.split("=",1)[1].split(",",1)[0].replace("&#%!$","").replace("*^/&%","")
 			if a[0] == "101":
@@ -106,7 +122,7 @@ class pars_object:
 				if b == "Студент":
 					self.categorycode = "ST"
 				elif b == "Сотрудник":
-					self.categorycode = "STU"
+					self.categorycode = "SU"
 				elif b == "Аспирант":
 					self.categorycode = "ASP"
 				elif b == "Докторант":
@@ -144,6 +160,7 @@ class pars_object:
 					self.fax = '"' + del_double(item.split("=",1)[1].replace("&#%!$"," ").replace("*^/&%"," ")) + '"'
 				else:
 					self.fax = del_double(item.split("=",1)[1].split(",",1)[0].replace("&#%!$"," ").replace("*^/&%"," "))
+		self.sort1 = '"' + del_double(item109 + " " + item112 + " " + item113 + " " + item114) + '"'
 
 if os.path.exists("tmp-patron_import.csv"):
 	os.remove("tmp-patron_import.csv")
