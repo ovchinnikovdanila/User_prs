@@ -30,15 +30,15 @@ def add_row():
 	if not os.path.exists(thisFile):
 		with open(thisFile, "w", newline = "", encoding="utf-8") as csvfile:
 			writer = csv.writer(csvfile, quoting=csv.QUOTE_NONE, escapechar='', quotechar='',  delimiter='\t')
-			header = ["cardnumber,surname,firstname,dateofbirth,othernames,categorycode,country,address,email,phone,phonepro,fax,B_address,branchcode,dateenrolled,dateexpiry,borrowernotes,sort1,sort2,password,userid"]
+			header = ["cardnumber,surname,firstname,dateofbirth,othernames,categorycode,country,address,email,phone,phonepro,fax,B_address,branchcode,dateenrolled,date_renewed,dateexpiry,debarredcomment,borrowernotes,sort1,sort2,password,userid"]
 			writer.writerow(header)
-			row = [a.cardnumber+","+a.surname+","+a.firstname+","+a.dateofbirth+","+a.othernames+","+a.categorycode+","+a.country+","+a.address+","+a.email+","+a.phone+","+a.phonepro+","+a.fax+","+a.b_address+","+a.branchcode+","+a.dateenrolled+","+a.dateexpiry+","+a.borrowernotes+","+a.sort1+","+a.sort2+","+a.password+","+a.userid]
+			row = [a.cardnumber+","+a.surname+","+a.firstname+","+a.dateofbirth+","+a.othernames+","+a.categorycode+","+a.country+","+a.address+","+a.email+","+a.phone+","+a.phonepro+","+a.fax+","+a.b_address+","+a.branchcode+","+a.dateenrolled+","+a.date_renewed+","+a.dateexpiry+","+a.debarredcomment+","+a.borrowernotes+","+a.sort1+","+a.sort2+","+a.password+","+a.userid]
 			writer.writerow(row)
 	
 	else:
 		with open(thisFile, "a", newline = "", encoding="utf-8") as csvfile:
 			writer = csv.writer(csvfile, quoting=csv.QUOTE_NONE, escapechar='', quotechar='',  delimiter='\t')
-			row = [a.cardnumber+","+a.surname+","+a.firstname+","+a.dateofbirth+","+a.othernames+","+a.categorycode+","+a.country+","+a.address+","+a.email+","+a.phone+","+a.phonepro+","+a.fax+","+a.b_address+","+a.branchcode+","+a.dateenrolled+","+a.dateexpiry+","+a.borrowernotes+","+a.sort1+","+a.sort2+","+a.password+","+a.userid]
+			row = [a.cardnumber+","+a.surname+","+a.firstname+","+a.dateofbirth+","+a.othernames+","+a.categorycode+","+a.country+","+a.address+","+a.email+","+a.phone+","+a.phonepro+","+a.fax+","+a.b_address+","+a.branchcode+","+a.dateenrolled+","+a.date_renewed+","+a.dateexpiry+","+a.debarredcomment+","+a.borrowernotes+","+a.sort1+","+a.sort2+","+a.password+","+a.userid]
 			writer.writerow(row)
 
 class pars_object:
@@ -57,7 +57,9 @@ class pars_object:
 		self.branchcode = 'TPU'
 		self.categorycode = ''
 		self.dateenrolled = ''
+		self.date_renewed = ''
 		self.dateexpiry = ''
+		self.debarredcomment = ''
 		self.borrowernotes = ''
 		self.password = ''
 		self.userid = ''
@@ -114,6 +116,9 @@ class pars_object:
 				self.email = item.split("=",1)[1].replace("&#%!$","").replace("*^/&%","@")
 			if a[0] == "120":
 				self.phone = item.split("=",1)[1].replace("&#%!$","").replace("*^/&%","")
+			if a[0] == "105":
+				b = item.split("=",1)[1].replace("&#%!$","").replace("*^/&%","")
+				self.date_renewed = b[0] + b[1] + b[2] + b[3] + "-" + b[4] + b[5] + "-" + b[6] + b[7]
 			if a[0] == "234":
 				b = item.split("=",1)[1].replace("&#%!$","").replace("*^/&%","")
 				self.dateofbirth = b[0] + b[1] + b[2] + b[3] + "-" + b[4] + b[5] + "-" + b[6] + b[7]
@@ -127,8 +132,10 @@ class pars_object:
 					self.categorycode = "ASP"
 				elif b == "Докторант":
 					self.categorycode = "DOC"
+				elif b == "Внешний":
+					self.categorycode = "OUT"
 				else:
-					self.categorycode = "PT"
+					self.categorycode = "OTH"
 			if a[0] == "242":
 				x = item.split("=",1)[1].replace("&#%!$","").replace("*^/&%","")
 				if (x == "заочное" or x == "вечернее") and self.categorycode == "ST":
@@ -139,6 +146,8 @@ class pars_object:
 			if a[0] == "106":
 				b = item.split("=",1)[1].replace("&#%!$","").replace("*^/&%","")
 				self.dateexpiry = b[0] + b[1] + b[2] + b[3] + "-" + b[4] + b[5] + "-" + b[6] + b[7]
+			if a[0] == "238":
+				self.debarredcomment = '"' + del_double(item.split("=",1)[1].replace("&#%!$"," ").replace("*^/&%"," ")) + '"'
 			if a[0] == "119":
 				if re.search('[а-яА-Я ,]', del_double(item.split("=",1)[1].replace("&#%!$"," ").replace("*^/&%"," "))):
 					self.borrowernotes = '"' + del_double(item.split("=",1)[1].replace("&#%!$"," ").replace("*^/&%"," ")) + '"'
